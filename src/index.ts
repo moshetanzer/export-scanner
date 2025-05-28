@@ -98,7 +98,7 @@ export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[
     return false
   }
 
-  const shouldExcludeKey = (key: string, obj: any): boolean => {
+  const shouldExcludeKey = (key: string): boolean => {
     if (excludedKeys.includes(key)) {
       return true
     }
@@ -124,13 +124,12 @@ export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[
       return true
     }
 
-    // Enhanced RegExp method detection - not sure if this is needed but was giving issues
+    // Enhanced RegExp method detection
     const regexpMethods = ['exec', 'test', 'compile', 'source', 'global', 'ignoreCase', 'multiline', 'sticky', 'unicode', 'flags', 'dotAll']
     if (regexpMethods.includes(key)) {
       return true
     }
 
-    // TODO: maybe default export should be handled differently abd should be included?
     const moduleMetadata = [
       'default',
       '__esModule',
@@ -162,16 +161,6 @@ export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[
 
     if (key === 'placeholder') {
       return true
-    }
-
-    try {
-      const descriptor = Object.getOwnPropertyDescriptor(obj, key)
-      if (descriptor && (descriptor.get || descriptor.set) && !descriptor.value) {
-        return false
-      }
-    }
-    catch {
-      // If we can't get descriptor, it might be inaccessible
     }
 
     return false
@@ -215,18 +204,8 @@ export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[
 
         log(`Found keys for ${path || 'root'}:`, Array.from(allKeys))
 
-        if (followPrototypes && obj.constructor && obj.constructor.prototype && obj !== obj.constructor.prototype) {
-          try {
-            const protoKeys = Object.getOwnPropertyNames(obj.constructor.prototype)
-            protoKeys.forEach(key => allKeys.add(key))
-          }
-          catch {
-            // Skip if prototype access fails
-          }
-        }
-
         const filteredKeys = Array.from(allKeys).filter(key =>
-          !shouldExcludeKey(key, obj),
+          !shouldExcludeKey(key),
         )
 
         log(`Filtered keys for ${path || 'root'}:`, filteredKeys)
@@ -235,6 +214,15 @@ export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[
 
         for (const key of filteredKeys) {
           try {
+            // Handle getters/setters first
+            const descriptor = Object.getOwnPropertyDescriptor(obj, key)
+            if (descriptor && (descriptor.get || descriptor.set) && !descriptor.value) {
+              const newPath = path ? `${path}.${key}` : key
+              log(`Found getter/setter property: ${newPath}`)
+              exports.push(newPath)
+              continue
+            }
+
             const value = obj[key]
             const newPath = path ? `${path}.${key}` : key
 
@@ -272,6 +260,35 @@ export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[
             catch {
               // Skip if we can't even get the descriptor
             }
+          }
+        }
+
+        // Handle prototype exploration for classes and constructor functions
+        if (followPrototypes && typeof obj === 'function' && obj.prototype && !isBuiltinObject(obj.prototype)) {
+          try {
+            const prototypeKeys = Object.getOwnPropertyNames(obj.prototype)
+            const className = path || obj.name || 'UnknownClass'
+
+            log(`Exploring prototype for ${className}:`, prototypeKeys)
+
+            for (const key of prototypeKeys) {
+              if (!shouldExcludeKey(key)) {
+                try {
+                  const descriptor = Object.getOwnPropertyDescriptor(obj.prototype, key)
+                  if (descriptor && typeof descriptor.value === 'function') {
+                    const methodPath = `${className}.${key}`
+                    log(`Found prototype method: ${methodPath}`)
+                    exports.push(methodPath)
+                  }
+                }
+                catch {
+                  // Skip if we can't access the property
+                }
+              }
+            }
+          }
+          catch {
+            // Skip if prototype access fails
           }
         }
       }
@@ -354,7 +371,6 @@ export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[
   log('=== FINAL EXPORTS ===', exports)
   return [...new Set(exports)]
 }
-
 /**
  * Analyzes the exports of a given package object, returning its functions, all exports,
  * and a summary of key characteristics.
