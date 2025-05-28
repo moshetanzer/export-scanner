@@ -23,7 +23,7 @@ import type { GetFunctionsOptions } from './types'
  * // exports might be: ['foo', 'bar.baz', 'qux (number)']
  * ```
  */
-export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[] {
+function getExports(pkg: any, options: GetFunctionsOptions = {}): string[] {
   const {
     maxDepth = 3,
     excludedKeys = ['constructor', 'prototype', 'caller', 'arguments', 'name', 'length'],
@@ -387,7 +387,7 @@ export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[
  *       - `isFunction`: Whether the package itself is a function.
  *       - `isObject`: Whether the package is a non-null object.
  */
-export function analyzePackage(pkg: any, options: GetFunctionsOptions = {}) {
+function analyzePackage(pkg: any, options: GetFunctionsOptions = {}) {
   const functions = getExports(pkg, { ...options, includeNonFunctions: false })
   const allExports = getExports(pkg, { ...options, includeNonFunctions: true })
 
@@ -403,3 +403,5 @@ export function analyzePackage(pkg: any, options: GetFunctionsOptions = {}) {
     },
   }
 }
+
+export { analyzePackage, getExports }
