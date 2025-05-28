@@ -337,7 +337,7 @@ export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[
         if (defaultKeys.length > 0) {
           explore(pkg.default)
 
-          keys.filter(k => k !== 'default' && k !== '__esModule').forEach((key) => {
+          for (const key of keys.filter(k => k !== 'default' && k !== '__esModule')) {
             try {
               if (typeof pkg[key] === 'function') {
                 exports.push(key)
@@ -351,7 +351,7 @@ export function getExports(pkg: any, options: GetFunctionsOptions = {}): string[
             catch {
               // Skip inaccessible
             }
-          })
+          }
 
           log('Final exports after default exploration:', exports)
           return [...new Set(exports)]
