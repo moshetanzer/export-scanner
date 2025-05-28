@@ -47,9 +47,7 @@
     "lint-staged": "latest",
     "lodash": "^4.17.21",
     "pkg-pr-new": "^0.0.50",
-    "scule": "^1.3.0",
     "simple-git-hooks": "latest",
-    "text-toolbox": "^1.0.15",
     "typescript": "latest",
     "unbuild": "latest",
     "vitest": "latest"
