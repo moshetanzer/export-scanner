@@ -30,6 +30,7 @@
     "test": "pnpm test:unit && pnpm test:types",
     "test:unit": "vitest",
     "test:knip": "knip",
+    "test:bench": "vitest bench",
     "test:versions": "installed-check -d --no-workspaces",
     "test:types": "tsc --noEmit"
   },
