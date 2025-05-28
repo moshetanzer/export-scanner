@@ -10,16 +10,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      scule:
-        specifier: ^1.3.0
-        version: 1.3.0
-      text-toolbox:
-        specifier: ^1.0.15
-        version: 1.0.15
     devDependencies:
       '@antfu/eslint-config':
         specifier: latest
@@ -51,12 +41,21 @@ importers:
       lint-staged:
         specifier: latest
         version: 16.1.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       pkg-pr-new:
         specifier: ^0.0.50
         version: 0.0.50
+      scule:
+        specifier: ^1.3.0
+        version: 1.3.0
       simple-git-hooks:
         specifier: latest
         version: 2.13.0
+      text-toolbox:
+        specifier: ^1.0.15
+        version: 1.0.15
       typescript:
         specifier: latest
         version: 5.8.3
