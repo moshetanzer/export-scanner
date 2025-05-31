@@ -7,10 +7,11 @@
   "license": "MIT",
   "keywords": [],
   "sideEffects": false,
-  "exports": "./dist/index.mjs",
+  "exports": {
+    ".": "./dist/index.mjs"
+  },
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
   "typesVersions": {
     "*": {
       "*": [
