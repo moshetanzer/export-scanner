@@ -1,17 +1,16 @@
 {
   "name": "export-scanner",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "packageManager": "pnpm@10.11.0",
   "description": "",
   "author": "",
   "license": "MIT",
   "keywords": [],
   "sideEffects": false,
-  "exports": {
-    ".": "./dist/index.mjs"
-  },
+  "exports": "./dist/index.mjs",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "typesVersions": {
     "*": {
       "*": [
