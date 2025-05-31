@@ -18,6 +18,9 @@
       ]
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "unbuild",
     "dev": "vitest dev",
