@@ -3,6 +3,7 @@ export interface GetFunctionsOptions {
   excludedKeys?: string[]
   includePrivate?: boolean
   includeNonFunctions?: boolean
+  includeClasses?: boolean
   followPrototypes?: boolean
   debug?: boolean
 }
